@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace osu_ibc
 {
     static class Helper
     {
-        public static string GetBackgroundFromBeatmap(string beatmapPath)  //tested on: v9
+        public static string GetBackgroundFromBeatmap(string beatmapPath)
         {
-            //[Events]
-            //0,0,"STBG.jpg"
             try {
                 using (StreamReader sr = new StreamReader(File.OpenRead(beatmapPath))) {
                     string line;
@@ -21,7 +18,7 @@ namespace osu_ibc
                     while ((line = sr.ReadLine()) != "[TimingPoints]") {
                         if (string.IsNullOrWhiteSpace(line)) continue;          //[X] bad line
                         if (line.StartsWith("//")) continue;                    //[X] comments
-                        if (line.StartsWith("0,")) return line.GetBetween('"'); //[v] proper line
+                        if (line.StartsWith("0,")) return line.GetBetween('"'); //[v] background line
                     }
                 }
             }
@@ -32,17 +29,14 @@ namespace osu_ibc
             return "";
         }
 
-        public static bool AddBeatmapsToDictionary(string directory, ref Dictionary<string, string> dicks)
+        public static bool AddBeatmapsToDictionary(string directory, ref Dictionary<string, string> dictionary)
         {
             bool containsBeatmaps = false;
             foreach (string file in Directory.GetFiles(directory).Where(file => Path.GetExtension(file) == ".osu")) {
                 containsBeatmaps = true;
-                if (dicks.ContainsKey(file)) continue;  //ignore if already read
-
-                string img = GetBackgroundFromBeatmap(file);    //xxx.jpg, xxx.png
-                if (!string.IsNullOrEmpty(img)) {
-                        dicks.Add(file, directory+img);
-                }
+                if (dictionary.ContainsKey(file)) continue;     //ignore if already read
+                string img = GetBackgroundFromBeatmap(file);    //get file name
+                if (!string.IsNullOrEmpty(img)) dictionary.Add(file, directory + img);  //add to dictionary
             }
             return containsBeatmaps;
         }
@@ -51,13 +45,6 @@ namespace osu_ibc
         {
             int firstIndex = str.IndexOf(bounds)+1;
             return str.Substring(firstIndex, str.LastIndexOf(bounds) - firstIndex);
-        }
-
-        public static void DebugLog(string message, string title = "DEBUG")
-        {
-#if DEBUG
-            MessageBox.Show(message, title);
-#endif
         }
     }
 }
