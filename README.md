@@ -4,7 +4,7 @@ DLL (comes with injector) that changes every loaded background to one you specif
 
 ## How to use
 1. Start up osu!
-1. start the injector
+1. Start the injector
 1. Load an image
 1. ???
 1. Profit!
