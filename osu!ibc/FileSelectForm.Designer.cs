@@ -31,6 +31,8 @@
             this.pbPreview = new System.Windows.Forms.PictureBox();
             this.btnSelect = new System.Windows.Forms.Button();
             this.btnDone = new System.Windows.Forms.Button();
+            this.cbReopen = new System.Windows.Forms.CheckBox();
+            this.lblReopen = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbPreview)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,11 +70,35 @@
             this.btnDone.UseVisualStyleBackColor = true;
             this.btnDone.Click += new System.EventHandler(this.btnDone_Click);
             // 
+            // cbReopen
+            // 
+            this.cbReopen.AutoSize = true;
+            this.cbReopen.BackColor = System.Drawing.Color.Transparent;
+            this.cbReopen.Checked = true;
+            this.cbReopen.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbReopen.Location = new System.Drawing.Point(13, 41);
+            this.cbReopen.Name = "cbReopen";
+            this.cbReopen.Size = new System.Drawing.Size(67, 17);
+            this.cbReopen.TabIndex = 3;
+            this.cbReopen.Text = "Re-open";
+            this.cbReopen.UseVisualStyleBackColor = false;
+            this.cbReopen.CheckedChanged += new System.EventHandler(this.cbReopen_CheckedChanged);
+            // 
+            // lblReopen
+            // 
+            this.lblReopen.Location = new System.Drawing.Point(13, 61);
+            this.lblReopen.Name = "lblReopen";
+            this.lblReopen.Size = new System.Drawing.Size(75, 44);
+            this.lblReopen.TabIndex = 4;
+            this.lblReopen.Text = "To reopen, hold P and O for 5 seconds.";
+            // 
             // FileSelectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(296, 146);
+            this.Controls.Add(this.lblReopen);
+            this.Controls.Add(this.cbReopen);
             this.Controls.Add(this.btnDone);
             this.Controls.Add(this.btnSelect);
             this.Controls.Add(this.pbPreview);
@@ -83,6 +109,7 @@
             this.TopMost = true;
             ((System.ComponentModel.ISupportInitialize)(this.pbPreview)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -91,5 +118,7 @@
         private System.Windows.Forms.PictureBox pbPreview;
         private System.Windows.Forms.Button btnSelect;
         private System.Windows.Forms.Button btnDone;
+        private System.Windows.Forms.CheckBox cbReopen;
+        private System.Windows.Forms.Label lblReopen;
     }
 }

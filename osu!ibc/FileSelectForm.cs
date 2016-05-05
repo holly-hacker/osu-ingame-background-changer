@@ -8,6 +8,7 @@ namespace osu_ibc
     public partial class FileSelectForm : Form
     {
         public string SelectedFile;
+        public bool AllowReopen;
 
         public FileSelectForm()
         {
@@ -18,6 +19,9 @@ namespace osu_ibc
 
             //snag icon from osu!, purely for esthetic purposes
             if (!UpdateFormIcon()) Icon = SystemIcons.Shield;
+
+            //set initial values
+            AllowReopen = cbReopen.Checked;
 
             //bring to front
             BringToFront();
@@ -52,6 +56,11 @@ namespace osu_ibc
         private void btnDone_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK; //set return value to OK
+        }
+
+        private void cbReopen_CheckedChanged(object sender, EventArgs e)
+        {
+            AllowReopen = ((CheckBox)sender).Checked;
         }
     }
 }

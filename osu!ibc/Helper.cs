@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace osu_ibc
 {
     static class Helper
     {
+        [DllImport("USER32.dll")]
+        static extern short GetAsyncKeyState(int nVirtKey);
+
         public static string GetBackgroundFromBeatmap(string beatmapPath)
         {
             try {
@@ -45,6 +49,11 @@ namespace osu_ibc
         {
             int firstIndex = str.IndexOf(bounds)+1;
             return str.Substring(firstIndex, str.LastIndexOf(bounds) - firstIndex);
+        }
+
+        public static bool IsKeyPressed(int keyCode)
+        {
+            return (GetAsyncKeyState(keyCode) & 0x8000) > 0;
         }
     }
 }

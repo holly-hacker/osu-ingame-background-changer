@@ -11,8 +11,15 @@ namespace osu_ibc
     public class MainClass : IEntryPoint
     {
         public static string NewFilePath = "";
+        public static bool OpenUsingHotkey = true;
         LocalHook _hkCreateFileW;   //ascii version not needed
         static Dictionary<string, string> _fileDictionary = new Dictionary<string, string>();
+
+        //stuff for opening fsf again
+        public const short KeyMenu1 = 0x4F; //O-key
+        public const short KeyMenu2 = 0x50; //P-key
+        public const short MenuWaitTicks = 5;   //hold for 5 seconds
+        public static int MenuWaitCounter = 0;
 
         //Imports
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -41,18 +48,9 @@ namespace osu_ibc
         public void Run(RemoteHooking.IContext inContext)  //method that gets called
         {
             //spawn FileSelectForm
-            FileSelectForm fsf = new FileSelectForm();
-            if (fsf.ShowDialog() != DialogResult.OK) {
-                //user didn't complete file selection, show warning
-                if (MessageBox.Show("You did not select a file.\nDo you want to remove all bg's (yes) or exit (no)?","osu!ibc - Warning!",MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) {
-                    return;
-                }
-            }
-            else {
-                NewFilePath = fsf.SelectedFile;
-            }
+            ShowFileSelect();
 
-            //create hooks for CreateFileA and CreateFileW
+            //create hooks for CreateFileW
             try {
                 _hkCreateFileW = LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "CreateFileW"), new DCreateFileW(CreateFileWHook), this);
                 _hkCreateFileW.ThreadACL.SetExclusiveACL(new[] {0});
@@ -62,7 +60,32 @@ namespace osu_ibc
                 MessageBox.Show("Exception occured while creating hooks: " + ex.Message);
             }
 
-            while (true) Thread.Sleep(1000);    //just sleeeep
+            while (true) {
+                Thread.Sleep(1000); //just sleeeep
+
+                //check if keys are pressed
+                if (OpenUsingHotkey) {
+                    if (Helper.IsKeyPressed(KeyMenu1) && Helper.IsKeyPressed(KeyMenu2)) { //if both keys are pressed
+                        MenuWaitCounter++; //incement timer by one
+
+                        if (MenuWaitCounter >= MenuWaitTicks) { //if counter is larger than value
+                            ShowFileSelect(); //open dialog
+                            MenuWaitCounter = 0; //reset counter
+                        }
+                    }
+                    else MenuWaitCounter = 0; //otherwise reset timer to 0
+                }
+            }
+        }
+
+        public void ShowFileSelect()
+        {
+            FileSelectForm fsf = new FileSelectForm();
+            if (fsf.ShowDialog() != DialogResult.OK) {  //user didn't complete file selection, show warning
+                if (MessageBox.Show("You did not select a file.\nDo you want to remove all bg's (yes) or exit (no)?", "osu!ibc - Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    return;
+            } else NewFilePath = fsf.SelectedFile;
+            OpenUsingHotkey = fsf.AllowReopen;
         }
 
         static IntPtr CreateFileWHook(  [MarshalAs(UnmanagedType.LPWStr)] string filename,
