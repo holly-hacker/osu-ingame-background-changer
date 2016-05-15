@@ -210,3 +210,13 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+
+# Holly edits
+# include easyhook files 
+!EasyHook32.dll
+!EasyHook32Svc.exe
+!EasyHook64.dll
+!EasyHook64Svc
+!EasyLoad32.dll
+!EasyLoad64.dll
