@@ -35,7 +35,7 @@ namespace osu_ibc_injector
         {
             //could handle length>1 in another way if needed
             Process[] processes = Process.GetProcessesByName("osu!");
-            if (processes.Length <= 0) Exit(" did not find a single osu! process!", true);
+            if (processes.Length <= 0) Exit(" found more than one osu! process!", true);
             if (processes.Length == 1) return processes[0];
             if (processes.Length >= 2) Exit(" multiple osu! processes found!", true);
             return null;    //should not occur
