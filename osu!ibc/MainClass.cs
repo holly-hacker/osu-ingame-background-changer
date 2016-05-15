@@ -47,10 +47,22 @@ namespace osu_ibc
 
         public void Run(RemoteHooking.IContext inContext)  //method that gets called
         {
+#if DEBUG
+            Helper.AllocConsole();
+            Console.WriteLine("Allocated Console");
+            Console.Title = "osu!ibc console {000}";
+#endif
+
             //spawn FileSelectForm
+#if DEBUG
+            Console.WriteLine("Spawing FileSelectForm");
+#endif
             ShowFileSelect();
 
             //create hooks for CreateFileW
+#if DEBUG
+            Console.WriteLine($"Creating hooks");
+#endif
             try {
                 _hkCreateFileW = LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "CreateFileW"), new DCreateFileW(CreateFileWHook), this);
                 _hkCreateFileW.ThreadACL.SetExclusiveACL(new[] {0});
@@ -58,10 +70,19 @@ namespace osu_ibc
             }
             catch (Exception ex) {
                 MessageBox.Show("Exception occured while creating hooks: " + ex.Message);
+                return;
             }
+
+#if DEBUG
+            Console.WriteLine($"Finished creating hooks, we're finished setting up!");
+#endif
 
             while (true) {
                 Thread.Sleep(1000); //just sleeeep
+
+#if DEBUG
+                Console.Title = "osu!ibc console {" + new Random().Next(100, 999) + "}";
+#endif
 
                 //check if keys are pressed
                 if (OpenUsingHotkey) {
@@ -101,8 +122,17 @@ namespace osu_ibc
                 case ".png":
                 case ".jpg":
                 case ".jpeg":
-                    if (!Path.GetDirectoryName(filename).Contains("Songs")) break;
-                    if (Helper.AddBeatmapsToDictionary(Path.GetDirectoryName(filename), ref _fileDictionary)) filename = NewFilePath; //this is a bg
+                    if (Path.GetDirectoryName(filename).Contains("Songs")) {
+                        if (Helper.AddBeatmapsToDictionary(Path.GetDirectoryName(filename), ref _fileDictionary)) {
+#if DEBUG
+                            Console.WriteLine($" - Changing {filename.Remove(0, filename.IndexOf("Songs"))} into {Path.GetFileName(NewFilePath)}");
+#endif
+                            filename = NewFilePath; //this is a bg
+                        }
+                    }
+#if DEBUG
+                    else Console.WriteLine($" - non-bg file {Path.GetFileName(filename)}");
+#endif
                     break;
             }
 

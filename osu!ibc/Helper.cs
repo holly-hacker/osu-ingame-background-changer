@@ -11,6 +11,11 @@ namespace osu_ibc
         [DllImport("USER32.dll")]
         static extern short GetAsyncKeyState(int nVirtKey);
 
+#if DEBUG
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern bool AllocConsole();
+#endif
+
         public static string GetBackgroundFromBeatmap(string beatmapPath)
         {
             try {
